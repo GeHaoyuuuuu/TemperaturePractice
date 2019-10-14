@@ -1,17 +1,17 @@
 package com.example.temperaturepractice;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MyListActivity extends AppCompatActivity implements Runnable{
+public class MyListActivity extends ListActivity implements Runnable, AdapterView.OnItemClickListener {
     ArrayList<HashMap<String,String>> listItems;
     //SimpleAdapter listItemsAdapter;
     Handler handler;
@@ -32,8 +32,8 @@ public class MyListActivity extends AppCompatActivity implements Runnable{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_list);
 
-        final ListView listView = findViewById(R.id.mylist);
-       // String data[] = {"111","2222"};
+        //final ListView listView = findViewById(R.id.);
+        // String data[] = {"111","2222"};
 
         listItems = new ArrayList<HashMap<String, String>>();
 
@@ -62,12 +62,12 @@ public class MyListActivity extends AppCompatActivity implements Runnable{
                             new String[]{"ItemTitle","ItemDetail"},
                             new int[]{R.id.itemTitle,R.id.itemDetail}
                     );
-                    listView.setAdapter(listItemsAdapter);
+                    getListView().setAdapter(listItemsAdapter);
                 }
                 super.handleMessage(msg);
             }
         };
-
+        getListView().setOnItemClickListener(this);
         /*for(int i = 0;i<10;i++){
             HashMap<String,String> map = new HashMap<String, String>();
             map.put("ItemTitle","Rate: " + i);//标题文字
@@ -118,6 +118,26 @@ public class MyListActivity extends AppCompatActivity implements Runnable{
         Message msg = handler.obtainMessage(6);
         msg.obj = keyList;
         handler.sendMessage(msg);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent,View view,
+                            int position,long id){
+        Object itemAtPosition = getListView().getItemAtPosition(position);
+        HashMap<String,String> map = (HashMap<String, String>) itemAtPosition;
+        String titleStr = map.get("ItemTitle");
+        String detailStr = map.get("ItemDetail");
+
+        TextView title = view.findViewById(R.id.itemTitle);
+        TextView detail = view.findViewById(R.id.itemDetail);
+        String title2 = String.valueOf(title.getText());
+        String detail2 = String.valueOf(detail.getText());
+
+        Intent item = new Intent(this,onRate.class);
+        item.putExtra("name",title2);
+        item.putExtra("value",detail2);
+        startActivity(item);
+
     }
 
 }

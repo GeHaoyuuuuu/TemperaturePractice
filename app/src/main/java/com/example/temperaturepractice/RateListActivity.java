@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -84,4 +86,5 @@ public class RateListActivity extends ListActivity implements Runnable{
         msg.obj = retList;
         handler.sendMessage(msg);
     }
+
 }
