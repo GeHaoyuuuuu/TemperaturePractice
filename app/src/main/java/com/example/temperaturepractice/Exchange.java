@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -87,6 +88,18 @@ public class Exchange extends AppCompatActivity implements Runnable{
         getMenuInflater().inflate(R.menu.menu,menu);
         return true;
         //return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==R.id.menu_set){
+
+        }else if(item.getItemId()==R.id.open_list){
+            //打开列表窗口
+            Intent list = new Intent(this,RateListActivity.class);
+            startActivity(list);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void show(float a){

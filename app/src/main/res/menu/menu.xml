@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="@string/home" />
-    <item android:title="@string/setting" />
+    <item
+        android:id="@+id/menu_set"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/open_list"
+        android:title="@string/label_open_list" />
 </menu>
