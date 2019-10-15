@@ -27,7 +27,7 @@ public class onRate extends AppCompatActivity {
 
         Intent intent = getIntent();
         String title = intent.getStringExtra("name");
-        value = 100f/Float.parseFloat(intent.getStringExtra("value"));
+        value = Float.parseFloat(intent.getStringExtra("value"));
 
         name.setText(title);
 

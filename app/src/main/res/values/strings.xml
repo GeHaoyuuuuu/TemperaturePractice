@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">TemperaturePractice</string>
+    <string name="app_name">Practice</string>
     <string name="temperature">Temperature：</string>
     <string name="number"></string>
     <string name="submit">submit</string>

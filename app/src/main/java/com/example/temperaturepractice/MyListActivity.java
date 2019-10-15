@@ -1,12 +1,17 @@
 package com.example.temperaturepractice;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.app.AppComponentFactory;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -23,16 +28,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MyListActivity extends ListActivity implements Runnable, AdapterView.OnItemClickListener {
+public class MyListActivity extends AppCompatActivity implements Runnable, AdapterView.OnItemClickListener,AdapterView.OnItemLongClickListener {
     ArrayList<HashMap<String,String>> listItems;
-    //SimpleAdapter listItemsAdapter;
+    SimpleAdapter listItemsAdapter;
     Handler handler;
+    ListView listView;
+    private String TAG = "Mylist";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_list);
 
-        //final ListView listView = findViewById(R.id.);
+        listView = findViewById(R.id.list);
         // String data[] = {"111","2222"};
 
         listItems = new ArrayList<HashMap<String, String>>();
@@ -46,7 +53,7 @@ public class MyListActivity extends ListActivity implements Runnable, AdapterVie
                 if (msg.what == 6) {
                     List<String> list2 = (List<String>)msg.obj;
                     int i;
-                    ArrayList<HashMap<String,String>> listItems = new ArrayList<HashMap<String, String>>();
+                    listItems = new ArrayList<HashMap<String, String>>();
                     for (i = 0;i<27;i++){
                         HashMap<String,String> map = new HashMap<String, String>();
                         String str = list2.get(i);
@@ -56,18 +63,21 @@ public class MyListActivity extends ListActivity implements Runnable, AdapterVie
                         map.put("ItemDetail",str1[1]);//详情描述
                         listItems.add(map);
                     }
-                    SimpleAdapter listItemsAdapter = new SimpleAdapter(MyListActivity.this,
+                    listItemsAdapter = new SimpleAdapter(MyListActivity.this,
                             listItems,//listItems数据源
                             R.layout.list_item,//list_item的XML布局实现
                             new String[]{"ItemTitle","ItemDetail"},
                             new int[]{R.id.itemTitle,R.id.itemDetail}
                     );
-                    getListView().setAdapter(listItemsAdapter);
+                    listView.setAdapter(listItemsAdapter);
                 }
                 super.handleMessage(msg);
             }
         };
-        getListView().setOnItemClickListener(this);
+
+        listView.setOnItemClickListener(this);
+        listView.setEmptyView(findViewById(R.id.nodata));
+        listView.setOnItemLongClickListener(this);
         /*for(int i = 0;i<10;i++){
             HashMap<String,String> map = new HashMap<String, String>();
             map.put("ItemTitle","Rate: " + i);//标题文字
@@ -95,7 +105,7 @@ public class MyListActivity extends ListActivity implements Runnable, AdapterVie
         List<String> keyList = new ArrayList<String>();
         Document doc = null;
         try{
-            Thread.sleep(300);
+            Thread.sleep(30);
             doc = Jsoup.connect("http://www.usd-cny.com/bankofchina.htm").get();
             Elements tables = doc.getElementsByTag("table");
 
@@ -107,7 +117,9 @@ public class MyListActivity extends ListActivity implements Runnable, AdapterVie
 
                 String str1 = td1.text();
                 String val = td2.text();
-                keyList.add(str1+","+val);
+                float val1 = 100f/Float.parseFloat(val);
+                String val2 = String.valueOf(val1);
+                keyList.add(str1+","+val2);
             }
         }catch(IOException e){
             e.printStackTrace();
@@ -123,7 +135,7 @@ public class MyListActivity extends ListActivity implements Runnable, AdapterVie
     @Override
     public void onItemClick(AdapterView<?> parent,View view,
                             int position,long id){
-        Object itemAtPosition = getListView().getItemAtPosition(position);
+        Object itemAtPosition = listView.getItemAtPosition(position);
         HashMap<String,String> map = (HashMap<String, String>) itemAtPosition;
         String titleStr = map.get("ItemTitle");
         String detailStr = map.get("ItemDetail");
@@ -140,4 +152,19 @@ public class MyListActivity extends ListActivity implements Runnable, AdapterVie
 
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int i, long l) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示")
+                .setMessage("请确认是否删除当前数据")
+                .setPositiveButton("是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int in) {
+                        listItems.remove(i);
+                        listItemsAdapter.notifyDataSetChanged();
+                    }
+                }).setNegativeButton("否",null);
+        builder.create().show();
+        return true;
+    }
 }
